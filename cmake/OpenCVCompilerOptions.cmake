@@ -102,6 +102,8 @@ if(CV_GCC OR CV_CLANG)
   add_extra_compiler_option(-Wstrict-prototypes)
   add_extra_compiler_option(-Wundef)
   add_extra_compiler_option(-Winit-self)
+  add_extra_compiler_option(-Wno-dev)
+  add_extra_compiler_option(-D_QNX_SOURCE)
   add_extra_compiler_option(-Wpointer-arith)
   if(NOT (CV_GCC AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "5.0"))
     add_extra_compiler_option(-Wshadow)  # old GCC emits warnings for variables + methods combination

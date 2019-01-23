@@ -5,7 +5,7 @@
 #      $ cmake <PATH_TO_OPENCV_ROOT>
 #
 # ----------------------------------------------------------------------------
-
+set(CMAKE_VERBOSE_MAKEFILE on)
 # Disable in-source builds to prevent source tree corruption.
 if(" ${CMAKE_SOURCE_DIR}" STREQUAL " ${CMAKE_BINARY_DIR}")
   message(FATAL_ERROR "
@@ -158,7 +158,14 @@ ocv_cmake_hook(POST_DETECT_COMPILER)
 
 # Add these standard paths to the search paths for FIND_LIBRARY
 # to find libraries from these locations first
-if(UNIX AND NOT ANDROID)
+if(VIBRANTE)
+  if(EXISTS /opt/qnx700/target/qnx7/aarch64le/lib)
+   list(APPEND CMAKE_LIBRARY_PATH /opt/qnx700/target/qnx7/aarch64le/lib)
+  endif()
+  if(EXISTS /opt/qnx700/target/qnx7/aarch64le/usr/lib)
+    list(APPEND CMAKE_LIBRARY_PATH /opt/qnx700/target/qnx7/aarch64le/usr/lib)
+  endif()
+elseif(UNIX AND NOT ANDROID)
   if(X86_64 OR CMAKE_SIZEOF_VOID_P EQUAL 8)
     if(EXISTS /lib64)
       list(APPEND CMAKE_LIBRARY_PATH /lib64)
@@ -295,8 +302,8 @@ OCV_OPTION(BUILD_ANDROID_EXAMPLES   "Build examples for Android platform"       
 OCV_OPTION(BUILD_DOCS               "Create build rules for OpenCV Documentation" OFF  IF (NOT WINRT AND NOT APPLE_FRAMEWORK))
 OCV_OPTION(BUILD_EXAMPLES           "Build all examples"                          OFF )
 OCV_OPTION(BUILD_PACKAGE            "Enables 'make package_source' command"       ON  IF NOT WINRT)
-OCV_OPTION(BUILD_PERF_TESTS         "Build performance tests"                     NOT INSTALL_CREATE_DISTRIB  IF (NOT APPLE_FRAMEWORK) )
-OCV_OPTION(BUILD_TESTS              "Build accuracy & regression tests"           NOT INSTALL_CREATE_DISTRIB  IF (NOT APPLE_FRAMEWORK) )
+OCV_OPTION(BUILD_PERF_TESTS         "Build performance tests"                     OFF)
+OCV_OPTION(BUILD_TESTS              "Build accuracy & regression tests"           OFF )
 OCV_OPTION(BUILD_WITH_DEBUG_INFO    "Include debug info into release binaries ('OFF' means default settings)" OFF )
 OCV_OPTION(BUILD_WITH_STATIC_CRT    "Enables use of statically linked CRT for statically linked OpenCV" ON IF MSVC )
 OCV_OPTION(BUILD_WITH_DYNAMIC_IPP   "Enables dynamic linking of IPP (only for standalone IPP)" OFF )
@@ -590,6 +597,8 @@ if(UNIX)
       set(OPENCV_LINKER_LIBS ${OPENCV_LINKER_LIBS} m pthread)
     elseif(EMSCRIPTEN)
       # no need to link to system libs with emscripten
+    elseif(VIBRANTE)
+      set(OPENCV_LINKER_LIBS ${OPENCV_LINKER_LIBS} m)
     else()
       set(OPENCV_LINKER_LIBS ${OPENCV_LINKER_LIBS} dl m pthread rt)
     endif()
@@ -834,9 +843,9 @@ add_subdirectory(doc)
 add_subdirectory(data)
 
 # extra applications
-if(BUILD_opencv_apps)
-  add_subdirectory(apps)
-endif()
+#if(BUILD_opencv_apps)
+#  add_subdirectory(apps)
+#endif()
 
 # examples
 if(BUILD_EXAMPLES OR BUILD_ANDROID_EXAMPLES OR INSTALL_PYTHON_EXAMPLES OR INSTALL_C_EXAMPLES)

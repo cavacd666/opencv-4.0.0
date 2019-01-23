@@ -35,7 +35,7 @@
 
 // For _smp_cmpxchg()
 #include <pthread.h>
-
+#include <smpxchg.h>
 namespace google {
 namespace protobuf {
 namespace internal {

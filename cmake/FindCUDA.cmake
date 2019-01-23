@@ -655,8 +655,8 @@ elseif(CUDA_VERSION VERSION_GREATER "5.0" AND CMAKE_CROSSCOMPILING AND "x${CUDA_
 elseif(CUDA_VERSION VERSION_GREATER "6.5" AND CMAKE_CROSSCOMPILING AND "x${CUDA_TARGET_CPU_ARCH}" STREQUAL "xAARCH64")
   if("${CUDA_TARGET_OS_VARIANT}" STREQUAL "Android" AND EXISTS "${CUDA_TOOLKIT_ROOT_DIR}/targets/aarch64-linux-androideabi")
     set(_cuda_target_triplet_initial "aarch64-linux-androideabi")
-  elseif(EXISTS "${CUDA_TOOLKIT_ROOT_DIR}/targets/aarch64-linux-gnueabihf")
-    set(_cuda_target_triplet_initial "aarch64-linux-gnueabihf")
+  elseif(EXISTS "${CUDA_TOOLKIT_ROOT_DIR}/targets/aarch64-qnx")
+    set(_cuda_target_triplet_initial "aarch64-qnx")
   endif()
 endif()
 set(CUDA_TARGET_TRIPLET "${_cuda_target_triplet_initial}" CACHE STRING "Specify the target triplet for which the input files must be compiled.")
@@ -705,7 +705,7 @@ macro(cuda_find_library_local_first_with_path_ext _var _names _doc _path_ext )
   # (lib/Win32) and the old path (lib).
   find_library(${_var}
     NAMES ${_names} ${_cuda_static_lib_names}
-    PATHS "${CUDA_TOOLKIT_TARGET_DIR}" "${CUDA_TOOLKIT_ROOT_DIR}"
+    PATHS "${CUDA_TOOLKIT_TARGET_DIR}" #"${CUDA_TOOLKIT_ROOT_DIR}"
     ENV CUDA_PATH
     ENV CUDA_LIB_PATH
     PATH_SUFFIXES ${_cuda_64bit_lib_dir} ${_cuda_cross_arm_lib_dir} "${_path_ext}lib/Win32" "${_path_ext}lib" "${_path_ext}libWin32"
